@@ -1,0 +1,224 @@
+1
+
+
+class TreeNode:
+    def _init_(self, val):
+        self.val = val
+        self.left = None
+        self.right = None
+
+    def insert_into_bst(root, val):
+        if root is None:
+            return TreeNode(val)
+
+        if val < root.val:
+            root.left = insert_into_bst(root.left, val)
+        else:
+            root.right = insert_into_bst(root.right, val)
+
+        return root
+
+    def inorder_traversal(root):
+        if root:
+            inorder_traversal(root.left)
+            print(root.val, end=" ")
+            inorder_traversal(root.right)
+
+    binary_tree_root = TreeNode(4)
+    binary_tree_root.left = TreeNode(2)
+    binary_tree_root.right = TreeNode(7)
+    binary_tree_root.left.left = TreeNode(1)
+    binary_tree_root.left.right = TreeNode(3)
+
+    bst_root = None
+
+    def create_bst_with_structure(root):
+        global bst_root
+        if root:
+            bst_root = insert_into_bst(bst_root, root.val)
+            create_bst_with_structure(root.left)
+            create_bst_with_structure(root.right)
+
+    create_bst_with_structure(binary_tree_root)
+
+    print("Inorder traversal of original binary tree:")
+    inorder_traversal(binary_tree_root)
+    print()
+
+    print("Inorder traversal of BST with preserved structure:")
+    inorder_traversal(bst_root)
+
+
+2
+
+
+class TreeNode:
+    def _init_(self, val):
+        self.val = val
+        self.left = None
+        self.right = None
+
+    def insert_into_bst(root, val):
+        if root is None:
+            return TreeNode(val)
+
+        if val < root.val:
+            root.left = insert_into_bst(root.left, val)
+        else:
+            root.right = insert_into_bst(root.right, val)
+
+        return root
+
+    def inorder_traversal(root, result):
+        if root:
+            inorder_traversal(root.left, result)
+            result.append(root.val)
+            inorder_traversal(root.right, result)
+
+    def third_largest_in_bst(root):
+        sorted_elements = []
+        inorder_traversal(root, sorted_elements)
+
+        if len(sorted_elements) < 3:
+            return "BST doesn't have a third largest element."
+
+        return sorted_elements[-3]
+
+    bst_root = None
+    elements = [5, 3, 7, 2, 4]
+
+    for element in elements:
+        bst_root = insert_into_bst(bst_root, element)
+
+    third_largest = third_largest_in_bst(bst_root)
+    print("Third largest element in the BST:", third_largest)
+
+
+3
+
+
+def min_heapify(arr, n, i):
+    smallest = i
+    left = 2 * i + 1
+    right = 2 * i + 2
+
+    if left < n and arr[left] < arr[smallest]:
+        smallest = left
+
+    if right < n and arr[right] < arr[smallest]:
+        smallest = right
+
+    if smallest != i:
+        arr[i], arr[smallest] = arr[smallest], arr[i]
+        min_heapify(arr, n, smallest)
+
+
+def convert_min_heap_to_max_heap(arr):
+    n = len(arr)
+    for i in range(n // 2 - 1, -1, -1):
+        min_heapify(arr, n, i)
+
+
+min_heap = [3, 5, 9, 6, 8, 20, 10, 12, 18, 9]
+
+print("Original minHeap:", min_heap)
+convert_min_heap_to_max_heap(min_heap)
+print("Converted maxHeap:", min_heap)
+
+
+4
+
+
+class TreeNode:
+    def _init_(self, val):
+        self.val = val
+        self.left = None
+        self.right = None
+
+    def is_avl_tree(root):
+        def get_height(node):
+            if not node:
+                return 0
+            left_height = get_height(node.left)
+            right_height = get_height(node.right)
+            return 1 + max(left_height, right_height)
+
+        if not root:
+            return True
+
+        left_height = get_height(root.left)
+        right_height = get_height(root.right)
+
+        if abs(left_height - right_height) > 1:
+            return False
+
+        return is_avl_tree(root.left) and is_avl_tree(root.right)
+
+    bst_root = TreeNode(10)
+    bst_root.left = TreeNode(5)
+    bst_root.right = TreeNode(15)
+    bst_root.left.left = TreeNode(2)
+    bst_root.left.right = TreeNode(8)
+    bst_root.right.right = TreeNode(20)
+
+    if is_avl_tree(bst_root):
+        print("The given BST is also an AVL tree.")
+    else:
+        print("The given BST is not an AVL tree.")
+
+
+5
+
+
+
+import heapq
+
+
+def merge_k_sorted_arrays(arrays):
+    heap = []  # Min-heap to store elements and their respective array index
+    result = []
+
+    for i in range(len(arrays)):
+        if arrays[i]:  # Check if the array is not empty
+            heapq.heappush(heap, (arrays[i][0], i, 0))
+
+    while heap:
+        val, arr_idx, idx = heapq.heappop(heap)
+        result.append(val)
+
+        if idx + 1 < len(arrays[arr_idx]):
+            heapq.heappush(heap, (arrays[arr_idx][idx + 1], arr_idx, idx + 1))
+
+    return result
+
+
+array1 = [2, 6, 9]
+array2 = [1, 4, 7]
+array3 = [3, 5, 8]
+
+arrays = [array1, array2, array3]
+
+merged_sorted = merge_k_sorted_arrays(arrays)
+print("Merged and sorted array:", merged_sorted)
+
+
+6
+
+
+def count_bsts(n):
+    if n <= 1:
+        return 1
+
+    catalan = [0] * (n + 1)
+    catalan[0] = catalan[1] = 1
+
+    for i in range(2, n + 1):
+        for j in range(i):
+            catalan[i] += catalan[j] * catalan[i - j - 1]
+
+    return catalan[n]
+
+
+n = int(input("Enter the value of n: "))
+num_bsts = count_bsts(n)
+print(f"Number of possible BSTs with numbers from 1 to {n}: {num_bsts}")

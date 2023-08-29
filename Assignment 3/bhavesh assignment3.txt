@@ -1,0 +1,166 @@
+1.
+class DoubleHashingHashTable:
+    def __init__(self, size):
+        self.size = size
+        self.hash_table = [None] * self.size
+
+    def hash1(self, key):
+        return key % self.size
+
+    def hash2(self, key):
+        return 7 - (key % 7)
+
+    def insert(self, key):
+        index = self.hash1(key)
+        if self.hash_table[index] is None:
+            self.hash_table[index] = key
+        else:
+            offset = self.hash2(key)
+            while self.hash_table[(index + offset) % self.size] is not None:
+                offset += self.hash2(key)
+            self.hash_table[(index + offset) % self.size] = key
+
+    def lookup(self, key):
+        index = self.hash1(key)
+        offset = self.hash2(key)
+        while self.hash_table[(index + offset) % self.size] is not None:
+            if self.hash_table[(index + offset) % self.size] == key:
+                return True
+            offset += self.hash2(key)
+        return False
+
+    def delete(self, key):
+        index = self.hash1(key)
+        offset = self.hash2(key)
+        while self.hash_table[(index + offset) % self.size] is not None:
+            if self.hash_table[(index + offset) % self.size] == key:
+                self.hash_table[(index + offset) % self.size] = None
+                return
+
+hash_table = DoubleHashingHashTable(10)
+
+hash_table.insert(5)
+hash_table.insert(15)
+hash_table.insert(25)
+hash_table.insert(8)
+
+print(hash_table.lookup(15))
+print(hash_table.lookup(10))
+
+hash_table.delete(15)
+print(hash_table.lookup(15))
+
+
+
+2.
+class ChainingHashTable:
+    def __init__(self, size):
+        self.size = size
+        self.hash_table = [[] for _ in range(self.size)]
+
+    def hash_function(self, key):
+        return key % self.size
+
+    def insert(self, key):
+        index = self.hash_function(key)
+        self.hash_table[index].append(key)
+
+    def lookup(self, key):
+        index = self.hash_function(key)
+        return key in self.hash_table[index]
+
+    def delete(self, key):
+        index = self.hash_function(key)
+        if key in self.hash_table[index]:
+            self.hash_table[index].remove(key)
+
+hash_table = ChainingHashTable(10)
+
+hash_table.insert(5)
+hash_table.insert(15)
+hash_table.insert(25)
+hash_table.insert(8)
+
+print(hash_table.lookup(15))
+print(hash_table.lookup(10))
+
+hash_table.delete(15)
+print(hash_table.lookup(15))
+
+
+
+3.
+def longest_consecutive_subsequence(arr):
+    if not arr:
+        return 0
+    
+    arr_set = set(arr)
+    longest_length = 0
+    
+    for num in arr_set:
+        if num - 1 not in arr_set:
+            current_num = num
+            current_length = 1
+            
+            while current_num + 1 in arr_set:
+                current_num += 1
+                current_length += 1
+            
+            longest_length = max(longest_length, current_length)
+    
+    return longest_length
+
+input_str = input()
+arr = list(map(int, input_str.split()))
+
+result = longest_consecutive_subsequence(arr)
+print(result)
+
+
+4.
+def find_symmetric_pairs(pairs):
+    symmetric_pairs = []
+    pair_map = {}
+
+    for pair in pairs:
+        first, second = pair
+        if second in pair_map and pair_map[second] == first:
+            symmetric_pairs.append((first, second))
+        else:
+            pair_map[first] = second
+
+    return symmetric_pairs
+
+input_str = input("Enter the pairs in the format 'a1 b1 a2 b2 ...': ")
+pair_values = list(map(int, input_str.split()))
+
+pairs = [(pair_values[i], pair_values[i + 1]) for i in range(0, len(pair_values), 2)]
+
+symmetric_pairs = find_symmetric_pairs(pairs)
+
+if symmetric_pairs:
+    print("Symmetric pairs:")
+    for pair in symmetric_pairs:
+        print(pair)
+else:
+    print("No symmetric pairs found.")
+
+
+5.
+def has_pair_with_sum(arr, x):
+    seen = set()
+
+    for num in arr:
+        complement = x - num
+        if complement in seen:
+            return True
+        seen.add(num)
+
+    return False
+
+arr = [1, 2, 3, 4, 5]
+x = 9
+
+result = has_pair_with_sum(arr, x)
+print(result)
+

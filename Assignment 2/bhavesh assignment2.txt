@@ -1,0 +1,383 @@
+1. from collections import deque
+
+class StackUsingQueue:
+    def __init__(self):
+        self.queue = deque()
+
+    def push(self, data): 
+        size = len(self.queue) 
+        self.queue.append(data) 
+        for _ in range(size):
+            self.queue.append(self.queue.popleft())
+
+    def pop(self):
+        if not self.is_empty():
+            return self.queue.popleft()
+        else:
+            raise IndexError("Stack is empty. Cannot pop.")
+
+    def top(self):
+        if not self.is_empty():
+            return self.queue[0]
+        else:
+            raise IndexError("Stack is empty. No top element.")
+
+    def is_empty(self):
+        return len(self.queue) == 0
+
+    def size(self):
+        return len(self.queue)
+ 
+if __name__ == "__main__":
+    stack = StackUsingQueue()
+
+    stack.push(1)
+    stack.push(2)
+    stack.push(3)
+
+    print("Stack size:", stack.size())   
+    print("Top element:", stack.top())  
+
+    print("Pop:", stack.pop())     
+    print("Pop:", stack.pop())    
+    print("Is Stack empty?", stack.is_empty())  
+
+    stack.push(4)
+    print("Stack size:", stack.size())  
+    print("Top element:", stack.top())  
+
+    print("Pop:", stack.pop())         
+    print("Is Stack empty?", stack.is_empty())  
+
+    print("Pop:", stack.pop())          
+    print("Is Stack empty?", stack.is_empty())   
+
+
+
+
+
+2. def evaluate_postfix_expression(expression):
+    def apply_operator(op, a, b):
+        if op == '+':
+            return a + b
+        elif op == '-':
+            return a - b
+        elif op == '*':
+            return a * b
+        elif op == '/':
+            return a / b
+
+    tokens = expression.split()
+    stack = []
+
+    for token in tokens:
+        if token.isdigit():
+            stack.append(int(token))
+        else:
+            if len(stack) < 2:
+                raise ValueError("Invalid postfix expression.")
+            b = stack.pop()
+            a = stack.pop()
+            result = apply_operator(token, a, b)
+            stack.append(result)
+
+    if len(stack) != 1:
+        raise ValueError("Invalid postfix expression.")
+
+    return stack[0]
+ 
+if __name__ == "__main__":
+    expression = "1 3 3 * + 9 -"
+    result = evaluate_postfix_expression(expression)
+    print("Output:", result)   
+
+
+
+
+
+3. class Node:
+    def __init__(self, data):
+        self.data = data
+        self.prev = None
+        self.next = None
+
+
+class StackUsingDoublyLinkedList:
+    def __init__(self):
+        self.head = None
+        self.tail = None
+        self.size = 0
+
+    def push(self, data):
+        new_node = Node(data)
+        if self.size == 0:
+            self.head = new_node
+            self.tail = new_node
+        else:
+            self.tail.next = new_node
+            new_node.prev = self.tail
+            self.tail = new_node
+        self.size += 1
+
+    def pop(self):
+        if self.size == 0:
+            raise IndexError("Stack is empty. Cannot pop.")
+        data = self.tail.data
+        if self.size == 1:
+            self.head = None
+            self.tail = None
+        else:
+            self.tail = self.tail.prev
+            self.tail.next = None
+        self.size -= 1
+        return data
+
+    def top(self):
+        if self.size == 0:
+            raise IndexError("Stack is empty. No top element.")
+        return self.tail.data
+
+    def is_empty(self):
+        return self.size == 0
+
+    def size(self):
+        return self.size
+
+
+ 
+if __name__ == "__main__":
+    stack = StackUsingDoublyLinkedList()
+
+    stack.push(1)
+    stack.push(2)
+    stack.push(3)
+
+    print("Stack size:", stack.size())   
+    print("Top element:", stack.top())   
+
+    print("Pop:", stack.pop())        
+    print("Pop:", stack.pop())         
+    print("Is Stack empty?", stack.is_empty())   
+
+    stack.push(4)
+    print("Stack size:", stack.size())  
+    print("Top element:", stack.top())   
+
+    print("Pop:", stack.pop())         
+    print("Is Stack empty?", stack.is_empty())  
+
+    print("Pop:", stack.pop())        
+    print("Is Stack empty?", stack.is_empty())   
+
+
+
+
+
+
+4. class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+
+
+class CircularQueue:
+    def __init__(self):
+        self.front = None
+        self.rear = None
+        self.size = 0
+
+    def enqueue(self, data):
+        new_node = Node(data)
+        if self.size == 0:
+            self.front = new_node
+            self.rear = new_node
+            new_node.next = new_node
+        else:
+            new_node.next = self.front
+            self.rear.next = new_node
+            self.rear = new_node
+        self.size += 1
+
+    def dequeue(self):
+        if self.size == 0:
+            raise IndexError("Queue is empty. Cannot dequeue.")
+        data = self.front.data
+        if self.size == 1:
+            self.front = None
+            self.rear = None
+        else:
+            self.front = self.front.next
+            self.rear.next = self.front
+        self.size -= 1
+        return data
+
+    def front_element(self):
+        if self.size == 0:
+            raise IndexError("Queue is empty. No front element.")
+        return self.front.data
+
+    def is_empty(self):
+        return self.size == 0
+
+    def size(self):
+        return self.size
+
+ 
+if __name__ == "__main__":
+    queue = CircularQueue()
+
+    queue.enqueue(1)
+    queue.enqueue(2)
+    queue.enqueue(3)
+
+    print("Queue size:", queue.size())  
+    print("Front element:", queue.front_element())   
+
+    print("Dequeue:", queue.dequeue())   
+    print("Dequeue:", queue.dequeue())   
+    print("Is Queue empty?", queue.is_empty())   
+
+    queue.enqueue(4)
+    print("Queue size:", queue.size())   
+    print("Front element:", queue.front_element())  
+
+    print("Dequeue:", queue.dequeue())   
+    print("Is Queue empty?", queue.is_empty())   
+
+    print("Dequeue:", queue.dequeue())   
+    print("Is Queue empty?", queue.is_empty())   
+
+
+
+
+
+
+5. class QueueUsingStacks:
+    def __init__(self):
+        self.stack_enqueue = []
+        self.stack_dequeue = []
+
+    def enqueue(self, data): 
+        while self.stack_dequeue:
+            self.stack_enqueue.append(self.stack_dequeue.pop())
+ 
+        self.stack_enqueue.append(data)
+
+    def dequeue(self): 
+        while self.stack_enqueue:
+            self.stack_dequeue.append(self.stack_enqueue.pop())
+ 
+        if self.stack_dequeue:
+            return self.stack_dequeue.pop()
+        else:
+            raise IndexError("Queue is empty. Cannot dequeue.")
+
+    def front_element(self): 
+        while self.stack_enqueue:
+            self.stack_dequeue.append(self.stack_enqueue.pop())
+ 
+        if self.stack_dequeue:
+            return self.stack_dequeue[-1]
+        else:
+            raise IndexError("Queue is empty. No front element.")
+
+    def is_empty(self):
+        return not (self.stack_enqueue or self.stack_dequeue)
+
+    def size(self):
+        return len(self.stack_enqueue) + len(self.stack_dequeue)
+
+ 
+if __name__ == "__main__":
+    queue = QueueUsingStacks()
+
+    queue.enqueue(1)
+    queue.enqueue(2)
+    queue.enqueue(3)
+
+    print("Queue size:", queue.size())   
+    print("Front element:", queue.front_element())  
+
+    print("Dequeue:", queue.dequeue())  
+    print("Dequeue:", queue.dequeue())   
+    print("Is Queue empty?", queue.is_empty())   
+
+    queue.enqueue(4)
+    print("Queue size:", queue.size())   
+    print("Front element:", queue.front_element())  
+
+    print("Dequeue:", queue.dequeue())  
+    print("Is Queue empty?", queue.is_empty())  
+
+    print("Dequeue:", queue.dequeue())  
+    print("Is Queue empty?", queue.is_empty())  
+
+
+
+
+
+
+
+6. class SpecialStack:
+    def __init__(self):
+        self.stack = []
+        self.min_stack = []
+
+    def push(self, data):
+        self.stack.append(data)
+        if not self.min_stack or data <= self.min_stack[-1]:
+            self.min_stack.append(data)
+
+    def pop(self):
+        if not self.stack:
+            raise IndexError("Stack is empty. Cannot pop.")
+        data = self.stack.pop()
+        if data == self.min_stack[-1]:
+            self.min_stack.pop()
+        return data
+
+    def top(self):
+        if not self.stack:
+            raise IndexError("Stack is empty. No top element.")
+        return self.stack[-1]
+
+    def get_min(self):
+        if not self.min_stack:
+            raise IndexError("Stack is empty. No minimum element.")
+        return self.min_stack[-1]
+
+    def is_empty(self):
+        return not self.stack
+
+    def size(self):
+        return len(self.stack)
+
+ 
+if __name__ == "__main__":
+    stack = SpecialStack()
+
+    stack.push(3)
+    stack.push(1)
+    stack.push(2)
+
+    print("Stack size:", stack.size())  
+    print("Top element:", stack.top())   
+    print("Minimum element:", stack.get_min())  
+
+    print("Pop:", stack.pop())   
+    print("Is Stack empty?", stack.is_empty())   
+
+    stack.push(5)
+    print("Stack size:", stack.size())   
+    print("Top element:", stack.top())   
+    print("Minimum element:", stack.get_min())  
+
+    print("Pop:", stack.pop())   
+    print("Is Stack empty?", stack.is_empty())   
+
+    print("Pop:", stack.pop())  
+    print("Minimum element:", stack.get_min())   
+    print("Is Stack empty?", stack.is_empty())   
+
+    print("Pop:", stack.pop())   
+    print("Is Stack empty?", stack.is_empty())   
